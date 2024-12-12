@@ -4,14 +4,14 @@ name: Deploy Lambda Function
 on:
   push:
     branches:
-      - main # é a unica que tem, mas provavelmente será outra
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Clone source code
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
