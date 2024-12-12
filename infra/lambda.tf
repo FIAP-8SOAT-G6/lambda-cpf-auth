@@ -4,11 +4,11 @@ data "archive_file" "zip" {
   output_path = "../lambda/hello.zip"
 }
 
-resource "aws_lambda_function" "hello_thawan" {
+resource "aws_lambda_function" "hello" {
   filename         = data.archive_file.zip.output_path
   function_name    = "node_js_lambda_authorizer"
   role             = aws_iam_role.lambda_exec_role.arn
-  handler          = "hello_thawan.handler"
+  handler          = "hello.handler"
   runtime          = "nodejs18.x"
 
   # TODO: add to get users from RDS
@@ -24,7 +24,7 @@ resource "aws_lambda_function" "hello_thawan" {
 resource "aws_lambda_permission" "lambda_permission" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.hello_thawan.function_name
+  function_name = aws_lambda_function.hello.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.api_gateway.execution_arn}/*/*"
 }
