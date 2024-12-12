@@ -7,7 +7,7 @@ data "archive_file" "zip" {
 resource "aws_lambda_function" "hello" {
   filename         = data.archive_file.zip.output_path
   function_name    = "node_js_lambda_authorizer"
-  role             = aws_iam_role.lambda_exec_role.arn
+  role             = "arn:aws:iam::205225019102:role/LabRole"
   handler          = "hello.handler"
   runtime          = "nodejs18.x"
 
