@@ -21,10 +21,9 @@ resource "aws_lambda_function" "hello" {
   source_code_hash = data.archive_file.zip.output_base64sha256
 }
 
-resource "aws_lambda_permission" "lambda_permission" {
-  statement_id  = "AllowAPIGatewayInvoke"
+resource "aws_lambda_permission" "allow_invoke" {
+  statement_id  = "AllowInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.hello.function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${aws_apigatewayv2_api.api_gateway.execution_arn}/*/*"
+  principal     = "*"
 }
