@@ -29,6 +29,8 @@ jobs:
           terraform_version: 1.5.6
 
       - name: Terraform Execution
+        env:
+          TF_VAR_lambda_role_arn: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
         run: |
           terraform -chdir=infra init
           terraform -chdir=infra validate
