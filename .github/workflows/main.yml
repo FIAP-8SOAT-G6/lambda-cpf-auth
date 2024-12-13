@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - develop
 
 jobs:
   deploy:
@@ -28,14 +29,10 @@ jobs:
           terraform_version: 1.5.6
 
       - name: Terraform Execution
+        env:
+          TF_VAR_lambda_role_arn: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
         run: |
-          terraform init
-          terraform validate
-          terraform plan
-          terraform apply -auto-approve
-
-      # Terraform destroy para evitar que tenham custos
-      - name: Terraform Destroy
-        if: always()
-        run: |
-          terraform destroy -auto-approve
+          terraform -chdir=infra init
+          terraform -chdir=infra validate
+          terraform -chdir=infra plan
+          terraform -chdir=infra apply -auto-approve
