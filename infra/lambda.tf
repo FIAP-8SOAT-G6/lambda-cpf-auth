@@ -1,4 +1,4 @@
-data "archive_file" "zip" {
+data "archive_file" "hello_zip" {
   type        = "zip"
   source_file = "../lambda/hello.js"
   output_path = "../lambda/hello.zip"
@@ -10,25 +10,19 @@ variable "lambda_role_arn" {
 }
 
 resource "aws_lambda_function" "hello" {
-  filename         = data.archive_file.zip.output_path
-  function_name    = "node_js_lambda_authorizer"
+  filename         = data.archive_file.hello_zip.output_path
+  function_name    = "lambda_hello"
   role             = var.lambda_role_arn
   handler          = "hello.handler"
   runtime          = "nodejs18.x"
 
-  # TODO: add to get users from RDS
-  # environment {
-  #   variables = {
-  #     eks_find_by_cpf_endpoint = var.eks_find_by_cpf_endpoint
-  #   }
-  # }
-
-  source_code_hash = data.archive_file.zip.output_base64sha256
+  source_code_hash = data.archive_file.hello_zip.output_base64sha256
 }
 
-resource "aws_lambda_permission" "allow_invoke" {
-  statement_id  = "AllowInvoke"
+resource "aws_lambda_permission" "allow_api_gateway_invoke" {
+  statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.hello.function_name
-  principal     = "*"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.api_gateway.execution_arn}/*/*"
 }
