@@ -10,6 +10,14 @@ resource "aws_apigatewayv2_integration" "lambda_integration" {
   payload_format_version = "2.0"
 }
 
+# intregation with validate-cpf lambda function
+resource "aws_apigatewayv2_integration" "validate_cpf_lambda_integration" {
+  api_id                 = aws_apigatewayv2_api.api_gateway.id
+  integration_type       = "AWS_PROXY"
+  integration_uri        = aws_lambda_function.validate_cpf.invoke_arn
+  payload_format_version = "2.0"
+}
+
 # lambda_authorizer
 resource "aws_lambda_permission" "lambda_authorizer_permission" {
   statement_id  = "AllowAPIGatewayInvoke"
@@ -49,6 +57,14 @@ resource "aws_apigatewayv2_route" "lambda_route" {
   target             = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
+# Rota do validate-cpf
+resource "aws_apigatewayv2_route" "validate_cpf_lambda_route" {
+  api_id             = aws_apigatewayv2_api.api_gateway.id
+  route_key          = "POST /validate_cpf"
+  target             = "integrations/${aws_apigatewayv2_integration.validate_cpf_lambda_integration.id}"
+}
+
+# Rota do eks
 resource "aws_apigatewayv2_route" "route" {
   api_id    = aws_apigatewayv2_api.api_gateway.id
   route_key = "ANY /{proxy+}"
