@@ -10,7 +10,18 @@ def lambda_handler(event:, context:)
     end
 
     if valid_cpf?(cpf)
-      { statusCode: 200, body: JSON.generate({ message: 'CPF válido.' }) }
+      api_gateway_url = ENV['API_GATEWAY_URL']
+      new_route = "#{api_gateway_url}/orders"
+
+      {
+        statusCode: 200,
+        body: JSON.generate(
+          {
+            next_url: new_route,
+            next_url_method: "POST",
+          }
+        )
+      }
     else
       { statusCode: 422, body: JSON.generate({ message: 'CPF inválido.' }) }
     end

@@ -11,11 +11,11 @@ resource "aws_lambda_function" "validate_cpf" {
   handler          = "validate_cpf.lambda_handler"
   runtime          = "ruby3.2"
 
-  #environment {
-  #  variables = {
-  #    API_GATEWAY_URL = output.api_gateway_url
-  #  }
-  #}
+  environment {
+    variables = {
+      API_GATEWAY_URL = "${aws_apigatewayv2_api.api_gateway.api_endpoint}/${aws_apigatewayv2_stage.prod_stage.name}"
+    }
+  }
 
   source_code_hash = data.archive_file.validate_cpf_lambda_auth_zip.output_base64sha256
 }
