@@ -30,7 +30,7 @@ jobs:
 
       - name: Terraform Execution
         env:
-          TF_VAR_lambda_role_arn: ${{ secrets.AWS_LAMBDA_ROLE_ARN }}
+          TF_VAR_lanchonete_api_dns: ${{ secrets.LANCHONETE_API_DNS }}
         run: |
           terraform -chdir=infra init
           terraform -chdir=infra validate

@@ -4,15 +4,14 @@ data "archive_file" "hello_zip" {
   output_path = "../lambda/hello.zip"
 }
 
-variable "lambda_role_arn" {
-  description = "IAM Role ARN for Lambda"
-  type        = string
+data "aws_iam_role" "labrole" {
+  name = "LabRole"
 }
 
 resource "aws_lambda_function" "hello" {
   filename         = data.archive_file.hello_zip.output_path
   function_name    = "lambda_hello"
-  role             = var.lambda_role_arn
+  role             = data.aws_iam_role.labrole.arn
   handler          = "hello.handler"
   runtime          = "nodejs18.x"
 
