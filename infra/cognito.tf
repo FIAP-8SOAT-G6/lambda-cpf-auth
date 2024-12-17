@@ -3,7 +3,7 @@ resource "aws_cognito_user_pool" "pool" {
 }
 
 resource "aws_cognito_user_pool_domain" "user_pool_domain" {
-  domain      = "thawan-tech-challenge-fiap"
+  domain      = "vitor-tech-challenge-fiap"
   user_pool_id = aws_cognito_user_pool.pool.id
 }
 
