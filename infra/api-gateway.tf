@@ -37,11 +37,6 @@ resource "aws_apigatewayv2_authorizer" "gateway_lambda_authorizer" {
   authorizer_payload_format_version = "2.0"
 }
 
-#variable "lanchonete_api_dns" {
-#  type        = string
-#  description = "DNS da Lanchonete API"
-#}
-
 resource "aws_apigatewayv2_integration" "eks_api_integration" {
   api_id                 = aws_apigatewayv2_api.api_gateway.id
   integration_type       = "HTTP_PROXY"
@@ -50,14 +45,14 @@ resource "aws_apigatewayv2_integration" "eks_api_integration" {
   payload_format_version = "1.0"
 }
 
-# Rota do lambda
+# Rota do lambda gerador do auth token
 resource "aws_apigatewayv2_route" "lambda_route" {
   api_id             = aws_apigatewayv2_api.api_gateway.id
   route_key          = "GET /lambda"
   target             = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
-# Rota do validate-cpf
+# Rota do lambda validate-cpf
 resource "aws_apigatewayv2_route" "validate_cpf_lambda_route" {
   api_id             = aws_apigatewayv2_api.api_gateway.id
   route_key          = "POST /validate_cpf"
@@ -72,26 +67,7 @@ resource "aws_apigatewayv2_route" "route" {
   target = "integrations/${aws_apigatewayv2_integration.eks_api_integration.id}"
 }
 
-# Define routes + authorizer
-# resource "aws_apigatewayv2_route" "catch_all_routes" {
-#   for_each = toset([
-#     "GET /",
-#     "POST /",
-#     "PUT /",
-#     "DELETE /",
-#     "GET /lambda",
-#     "POST /lambda",
-#     "PUT /lambda",
-#     "DELETE /lambda"
-#   ])
-
-#   api_id            = aws_apigatewayv2_api.api_gateway.id
-#   route_key         = each.key
-#   target            = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
-#   authorization_type = "CUSTOM"
-#   authorizer_id     = aws_apigatewayv2_authorizer.gateway_lambda_authorizer.id
-# }
-
+# Stages
 resource "aws_apigatewayv2_stage" "dev_stage" {
   api_id      = aws_apigatewayv2_api.api_gateway.id
   name        = "dev"
